@@ -1,48 +1,46 @@
 import ollama
-from tools import TOOL_REGISTRY, AVAILABLE_TOOLS_LIST
+from config import MAIN_MODEL
+from mac_tools import ALL_TOOLS, TOOL_MAP
+# from mac_tools.assistant_control import EXIT_SIGNAL
+
+MAX_STEPS = 6   # stops infinite tool loops
+
+
+def _run_tool(name: str, arguments: dict) -> str:
+    fn = TOOL_MAP.get(name)
+    if fn is None:
+        return f"Error: unknown tool '{name}'."
+    try:
+        return str(fn(**arguments))
+    except TypeError as e:
+        return f"Error: wrong arguments for {name} ({e})."
+    except Exception as e:
+        return f"Error: {name} failed ({e})."
+
 
 def process_prompt(messages: list) -> str:
-    """Sends the conversation to the LLM, executes requested tools, and returns the final response."""
-    
-    # 1. Ask the LLM to route the request
-    response = ollama.chat(
-        model='llama3.2',
-        messages=messages,
-        tools=AVAILABLE_TOOLS_LIST
-    )
+    for _ in range(MAX_STEPS):
+        response = ollama.chat(
+            model=MAIN_MODEL,
+            messages=messages,
+            tools=ALL_TOOLS,
+            think=False,                       # faster for voice; remove if your ollama version errors
+            options={"temperature": 0.4},
+        )
+        msg = response.message
+        messages.append(msg)
 
-    # 2. Check if tools were requested
-    if response.message.tool_calls:
-        # Append the LLM's tool request to history
-        messages.append(response.message)
-        
-        for tool_call in response.message.tool_calls:
-            tool_name = tool_call.function.name
-            arguments = tool_call.function.arguments
-            
-            print(f"\n[SYSTEM] Executing tool: {tool_name}")
-            
-            # 3. Route to the correct tool
-            if tool_name in TOOL_REGISTRY:
-                result = TOOL_REGISTRY[tool_name](**arguments)
+        if not msg.tool_calls:                 # plain answer: done
+            return msg.content
 
-                # Intercept the signal immediately. DO NOT feed this back to the LLM.
-                if result == "EXIT_SIGNAL":
-                    return "EXIT_SIGNAL"
-                
-                # 4. Feed OS result back to the LLM
-                messages.append({
-                    'role': 'tool', 
-                    'content': result, 
-                    'name': tool_name
-                })
-        
-        # 5. Get the final conversational response after tools execute
-        final_response = ollama.chat(model='llama3.2', messages=messages)
-        messages.append(final_response.message)
-        return final_response.message.content
-        
-    else:
-        # No tools needed, just a standard chat response
-        messages.append(response.message)
-        return response.message.content
+        for call in msg.tool_calls:
+            name = call.function.name
+            print(f"\n[SYSTEM] Executing tool: {name}")
+            result = _run_tool(name, call.function.arguments)
+
+            if result == EXIT_SIGNAL:          # never shown to the LLM
+                return EXIT_SIGNAL
+
+            messages.append({"role": "tool", "tool_name": name, "content": result})
+
+    return "I got stuck on that one, sir. Could you rephrase it?"

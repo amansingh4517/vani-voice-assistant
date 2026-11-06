@@ -42,7 +42,7 @@ def speak(text: str):
         # 1. Generate the audio using MLX
         # 'af_heart' is a high-quality American Female voice. 
         # You can also try 'am_adam' (American Male) or 'bf_emma' (British Female)
-        results = list(model.generate(clean_text, voice="af_heart"))
+        results = list(model.generate(text=clean_text))
         
         if not results:
             print("[VOICE ERROR] MLX generated empty audio.")

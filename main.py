@@ -1,31 +1,32 @@
+import re                                                    # NEW
 from engine import process_prompt
 from tools.ear import listen_for_command
 from tools.voice import speak
+from prompt import build_system_prompt                       # CHANGED (was: system_prompt)
 
 # Keywords that genuinely mean "quit" — used as a safeguard against
 # the LLM incorrectly triggering exit_system on unrelated commands.
-EXIT_KEYWORDS = {'exit', 'quit', 'goodbye', 'bye', 'shut down', 'shutdown', 'stop'}
+QUIT_KEYWORDS = ["exit", "quit", "stop listening", "goodbye", "bye",
+                 "go to sleep", "shut down"]                 # NEW
+EXACT_QUIT = {"exit", "stop", "quit", "goodbye", "bye"}      # NEW (instant quit, no LLM)
+
+
+def trim_history(messages, keep_turns=8):                    # NEW (optional)
+    """Keep the system prompt + last few user turns, cutting only at a user
+    message so a tool call is never separated from its result."""
+    role = lambda m: m["role"] if isinstance(m, dict) else m.role
+    users = [i for i, m in enumerate(messages) if role(m) == "user"]
+    if len(users) <= keep_turns:
+        return messages
+    return messages[:1] + messages[users[-keep_turns]:]
+
 
 def main():
     # Initialize the system prompt to define the assistant's behavior
     messages = [
         {
             'role': 'system', 
-            'content': (
-                'You are Andy, a concise personal assistant on macOS. '
-                'Keep replies to 1-2 sentences.\n\n'
-
-                'TOOL RULES:\n'
-                '- For casual chat, questions, or conversation: just reply normally. DO NOT call any tool.\n'
-                '- Only call create_file, read_file, or list_directory when the user explicitly asks to work with files.\n'
-                '- NEVER call exit_system unless the user literally says "exit", "quit", "goodbye", or "shut down". '
-                'No other phrase should trigger exit_system.\n\n'
-
-                'SAFETY:\n'
-                '- Before deleting, overwriting, or moving files, ALWAYS ask for confirmation first.\n'
-                '- Before any bulk or recursive operation, ALWAYS ask for confirmation first.\n'
-                '- Only proceed after the user explicitly says yes.'
-            )
+            'content': build_system_prompt()                 # CHANGED
         }
     ]
     
@@ -34,33 +35,48 @@ def main():
     
     while True:
         user_input = listen_for_command()
+
+        if not user_input or not user_input.strip():         # NEW: ignore silence
+            continue
+
         print(f"\n\nYou said: {user_input}")
+
+        if re.sub(r"[^a-z ]", "", user_input.lower()).strip() in EXACT_QUIT:   # NEW
+            print("Shutting down...")
+            speak("Shutting down now. See you later.")
+            break
+
+        messages[0]['content'] = build_system_prompt()       # NEW: fresh date/time each turn
+        checkpoint = len(messages)                           # NEW: for rolling back a bad turn
             
         messages.append({'role': 'user', 'content': user_input})
         
         # Pass the state to the engine and wait for the final text string
         print("[BRAIN] Thinking...")
-        assistant_reply = process_prompt(messages)
+        try:                                                 # NEW
+            assistant_reply = process_prompt(messages)
+        except Exception as e:                               # NEW
+            print(f"[BRAIN] Error: {e}")
+            del messages[checkpoint:]
+            speak("Sorry, I couldn't reach my brain just now.")
+            continue
 
         if assistant_reply == "EXIT_SIGNAL":
-            # Safeguard: only exit if the user actually said an exit keyword.
-            # llama3.2 sometimes triggers exit_system incorrectly.
-            if any(kw in user_input.lower() for kw in EXIT_KEYWORDS):
-                print("Shutting down...")
-                speak("Shutting down now. See you later.")
-                break
-            else:
-                # LLM misfired — ignore the false exit and ask the LLM again without tools
-                print("[SYSTEM] Ignoring false exit_system trigger.")
-                messages.pop()  # remove the user message we just added
-                messages.append({'role': 'user', 'content': user_input})
-                assistant_reply = process_prompt(messages)
-                if assistant_reply == "EXIT_SIGNAL":
-                    # Still misfiring, just give a generic reply
-                    assistant_reply = "Sorry, I didn't catch that. Could you say that again?"
+            # NEW: only quit if the user's words actually mean quit
+            if not any(re.search(rf"\b{k}\b", user_input.lower()) for k in QUIT_KEYWORDS):
+                print("[BRAIN] Ignored a false exit request.")
+                del messages[checkpoint:]
+                speak("Sorry, I didn't catch that. Could you say it again?")
+                continue
+            print("Shutting down...")
+            speak("Shutting down now. See you later.")
+            break
+
         
         print(f"\nAssistant: {assistant_reply}\n")
         speak(assistant_reply)
+
+        messages = trim_history(messages)                    # NEW (optional)
 
 if __name__ == "__main__":
     main()

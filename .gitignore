@@ -1,0 +1,26 @@
+# 1. Virtual Environments
+# Never push your 'myenv' folder. It contains thousands of Python files 
+# compiled specifically for your Apple Silicon M5 chip.
+myenv/
+genaiEnv/
+venv/
+
+# 2. Python Caches
+# Python automatically generates these when running scripts. They are useless on other machines.
+__pycache__/
+*.pyc
+
+# 3. macOS System Files
+# Your Mac creates hidden files in folders to remember icon positions. 
+.DS_Store
+
+# 4. Large Binaries & AI Models
+# GitHub blocks files over 100MB, and storing binary models in Git bloats the history.
+# We ignore the models folder so we don't upload the Piper .onnx files.
+models/
+
+# 5. Application Data
+# Ignore the generated audio files and test scripts created by the agent.
+*.wav
+test.txt
+app.py

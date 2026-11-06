@@ -7,20 +7,17 @@ import collections
 import numpy as np
 import sounddevice as sd
 from silero_vad_lite import SileroVAD
-from faster_whisper import WhisperModel
+from mlx_audio.stt import load as load_stt_model
+# from config import WAIT_TIME_SECONDS
 
 print("[SYSTEM] Loading Audio Models into Memory...")
 vad = SileroVAD(16000)
-whisper_model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
+
+# Load the MLX Whisper model via mlx-audio (recommended: whisper-large-v3-turbo or base-en)
+# This runs directly on your Mac's M-series unified memory via MLX
+whisper_model = load_stt_model("mlx-community/whisper-large-v3-turbo-asr-fp16")
 
 def listen_for_command():
-
-    #If we leave them inside, it will reload 1.5GB of AI into your Mac's RAM every single time you speak, causing massive latency.
-            # print("Loading AI Models...")
-            # # Initialize VAD for 16kHz audio
-            # vad = SileroVAD(16000)
-            # # Initialize Whisper on CPU using 8-bit quantization for maximum speed on Apple Silicon
-            # whisper_model = WhisperModel("tiny.en", device="cpu", compute_type="int8")
 
     # The thread-safe buffer between the microphone and our AI
     audio_queue = queue.Queue()
@@ -33,10 +30,8 @@ def listen_for_command():
     is_speaking = False
     silence_counter = 0
     
-    # --- CONFIGURATION ---
-    # How many seconds of silence to wait before transcribing
-    WAIT_TIME_SECONDS = 2.5 
 
+    WAIT_TIME_SECONDS = 2.5
     # --- INTERNAL MATH ---
     # We calculate the frames dynamically based on the hardware settings
     CHUNK_SIZE = 512
@@ -90,16 +85,16 @@ def listen_for_command():
                     
                     # Convert the accumulated list into a NumPy array for Whisper
                     audio_data = np.array(audio_buffer, dtype=np.float32)
-                    
-                    # Run STT
-                    segments, _ = whisper_model.transcribe(audio_data, beam_size=5)
-                    text = "".join(segment.text for segment in segments).strip()
-
 
                     # 1. Clamp values to standard audio ranges (-1.0 to 1.0)
                     audio_data = np.clip(audio_data, -1.0, 1.0)
                     # 2. Replace any NaN or Infinite mathematical errors with 0
                     audio_data = np.nan_to_num(audio_data)
+
+                    # Run STT via mlx-audio generate method
+                    # mlx-audio accepts a 1D float32 numpy array directly
+                    result = whisper_model.generate(audio_data)
+                    text = result.text.strip() if hasattr(result, 'text') else str(result).strip()
                     
                     if text:
                         return text
@@ -116,4 +111,4 @@ def listen_for_command():
                 pre_speech_buffer.append(chunk)
 
 if __name__ == "__main__":
-    listen_and_transcribe()
+    listen_for_command()

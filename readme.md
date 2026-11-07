@@ -2,11 +2,13 @@
   <img src="assets/logo.svg" alt="Vani Logo" width="200"/>
 </p>
 
-<h1 align="center"></h1>
+<h1 align="center">Vani Voice Assistant</h1>
 
 <p align="center"><b>Your personal voice assistant, running entirely on your Mac.</b></p>
 
-<br>
+<p align="center">
+  <img src="assets/banner.svg" alt="Vani Voice Assistant Banner" width="850"/>
+</p>
 
 <p align="center">
   <b>Fully local voice assistant for macOS.</b> Speech-to-text, LLM reasoning, 60+ macOS tools, and neural text-to-speech.<br>
@@ -76,8 +78,8 @@ ollama pull qwen3.5:9b
 ### Using pip
 
 ```bash
-git clone <your-repo-url>
-cd "Voice Assistant"
+git clone https://github.com/amansingh4517/vani-voice-assistant.git
+cd vani-voice-assistant
 ```
 
 Create a virtual environment and install dependencies:
@@ -156,7 +158,7 @@ The system follows a **listen → think → act → speak** loop:
 ### Project structure
 
 ```
-Voice Assistant/
+vani-voice-assistant/
 ├── main.py                  # Entry point
 ├── engine.py                # LLM tool-calling loop
 ├── prompt.py                # Vani system prompt

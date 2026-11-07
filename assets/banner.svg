@@ -1,48 +1,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300">
   <defs>
+    <!-- Background Gradient -->
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0a0a1a"/>
-      <stop offset="50%" stop-color="#0d1025"/>
-      <stop offset="100%" stop-color="#0a0a1a"/>
+      <stop offset="0%" stop-color="#0e0712"/>
+      <stop offset="50%" stop-color="#180b1e"/>
+      <stop offset="100%" stop-color="#0e0712"/>
     </linearGradient>
+
+    <!-- Main Sharp Wave: Coral/Rose (#FB7185) with bright highlights -->
     <linearGradient id="wave1" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#6366f1" stop-opacity="0"/>
-      <stop offset="30%" stop-color="#6366f1" stop-opacity="0.6"/>
-      <stop offset="50%" stop-color="#818cf8" stop-opacity="0.9"/>
-      <stop offset="70%" stop-color="#6366f1" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#FB7185" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#FB7185" stop-opacity="0.5"/>
+      <stop offset="50%" stop-color="#FDA4AF" stop-opacity="0.95"/>
+      <stop offset="75%" stop-color="#FB7185" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FB7185" stop-opacity="0"/>
     </linearGradient>
+
+    <!-- Middle Wave: Warm Golden Yellow (#FDE68A) -->
     <linearGradient id="wave2" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0"/>
-      <stop offset="25%" stop-color="#8b5cf6" stop-opacity="0.4"/>
-      <stop offset="50%" stop-color="#a78bfa" stop-opacity="0.7"/>
-      <stop offset="75%" stop-color="#8b5cf6" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#FDE68A" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#FBBF24" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#FDE68A" stop-opacity="0.8"/>
+      <stop offset="75%" stop-color="#FBBF24" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FDE68A" stop-opacity="0"/>
     </linearGradient>
+
+    <!-- Wide Wave: Warm Rose to Golden transition -->
     <linearGradient id="wave3" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0"/>
-      <stop offset="20%" stop-color="#3b82f6" stop-opacity="0.3"/>
-      <stop offset="50%" stop-color="#60a5fa" stop-opacity="0.5"/>
-      <stop offset="80%" stop-color="#3b82f6" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#F43F5E" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#FB7185" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#FDE68A" stop-opacity="0.5"/>
+      <stop offset="80%" stop-color="#FB7185" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#F43F5E" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="centerGlow" x1="0.5" y1="0" x2="0.5" y2="1" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#818cf8" stop-opacity="0"/>
-      <stop offset="40%" stop-color="#818cf8" stop-opacity="0.08"/>
-      <stop offset="60%" stop-color="#818cf8" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
-    </linearGradient>
+
+    <!-- Radial Glow centered on voice waves -->
     <radialGradient id="orb" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#818cf8" stop-opacity="0.15"/>
-      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#FB7185" stop-opacity="0.18"/>
+      <stop offset="60%" stop-color="#FDE68A" stop-opacity="0.05"/>
+      <stop offset="100%" stop-color="#FB7185" stop-opacity="0"/>
     </radialGradient>
+
     <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
     <filter id="softGlow">
       <feGaussianBlur stdDeviation="8"/>
     </filter>
@@ -50,59 +56,58 @@
 
   <!-- Background -->
   <rect width="900" height="300" fill="url(#bg)"/>
-  
-  <!-- Subtle radial glow behind center -->
-  <ellipse cx="450" cy="150" rx="300" ry="120" fill="url(#orb)"/>
 
-  <!-- Ambient particles -->
-  <g opacity="0.3">
-    <circle cx="120" cy="80" r="1.2" fill="#818cf8"/>
-    <circle cx="200" cy="200" r="0.8" fill="#a78bfa"/>
-    <circle cx="340" cy="60" r="1" fill="#60a5fa"/>
-    <circle cx="500" cy="240" r="0.9" fill="#818cf8"/>
-    <circle cx="620" cy="50" r="1.1" fill="#a78bfa"/>
-    <circle cx="700" cy="220" r="0.7" fill="#60a5fa"/>
-    <circle cx="780" cy="100" r="1" fill="#818cf8"/>
-    <circle cx="830" cy="180" r="0.8" fill="#a78bfa"/>
-    <circle cx="80" cy="160" r="0.9" fill="#60a5fa"/>
-    <circle cx="400" cy="40" r="0.7" fill="#818cf8"/>
-    <circle cx="560" cy="260" r="1" fill="#a78bfa"/>
-    <circle cx="160" cy="250" r="0.6" fill="#60a5fa"/>
-    <circle cx="750" cy="270" r="0.8" fill="#818cf8"/>
-    <circle cx="300" cy="230" r="0.5" fill="#a78bfa"/>
-    <circle cx="650" cy="150" r="0.7" fill="#60a5fa"/>
+  <!-- Ambient Glow -->
+  <ellipse cx="450" cy="150" rx="320" ry="120" fill="url(#orb)"/>
+
+  <!-- Ambient Particles in Rose & Gold -->
+  <g opacity="0.35">
+    <circle cx="120" cy="80" r="1.2" fill="#FDE68A"/>
+    <circle cx="200" cy="200" r="0.8" fill="#FB7185"/>
+    <circle cx="340" cy="60" r="1.1" fill="#FDA4AF"/>
+    <circle cx="500" cy="240" r="0.9" fill="#FDE68A"/>
+    <circle cx="620" cy="50" r="1.1" fill="#FB7185"/>
+    <circle cx="700" cy="220" r="0.8" fill="#FDA4AF"/>
+    <circle cx="780" cy="100" r="1" fill="#FDE68A"/>
+    <circle cx="830" cy="180" r="0.8" fill="#FB7185"/>
+    <circle cx="80" cy="160" r="0.9" fill="#FDA4AF"/>
+    <circle cx="400" cy="40" r="0.7" fill="#FDE68A"/>
+    <circle cx="560" cy="260" r="1" fill="#FB7185"/>
+    <circle cx="160" cy="250" r="0.6" fill="#FDA4AF"/>
+    <circle cx="750" cy="270" r="0.8" fill="#FDE68A"/>
+    <circle cx="300" cy="230" r="0.5" fill="#FB7185"/>
+    <circle cx="650" cy="150" r="0.7" fill="#FDA4AF"/>
   </g>
 
-  <!-- Voice waveform - outer layer (subtle) -->
-  <g filter="url(#softGlow)" opacity="0.3">
+  <!-- Voice waveform - outer soft bloom -->
+  <g filter="url(#softGlow)" opacity="0.25">
     <path d="M 150,150 Q 200,150 220,120 Q 240,90 260,150 Q 280,210 300,150 Q 320,90 340,150 Q 360,200 380,150 Q 400,105 420,150 Q 440,190 460,150 Q 480,115 500,150 Q 520,180 540,150 Q 560,120 580,150 Q 600,190 620,150 Q 640,100 660,150 Q 680,200 700,150 Q 720,110 750,150" 
-      stroke="#818cf8" stroke-width="3" fill="none"/>
+      stroke="#FB7185" stroke-width="3" fill="none"/>
   </g>
 
-  <!-- Voice waveform - main wave 3 (blue, wide) -->
+  <!-- Wave 3: Wide ambient rose-gold wave -->
   <path d="M 100,150 Q 150,150 180,138 Q 210,126 240,150 Q 270,174 300,150 Q 330,130 360,150 Q 390,168 420,150 Q 450,134 480,150 Q 510,164 540,150 Q 570,138 600,150 Q 630,160 660,150 Q 690,140 720,150 Q 750,158 800,150" 
     stroke="url(#wave3)" stroke-width="1.5" fill="none" opacity="0.7"/>
 
-  <!-- Voice waveform - main wave 2 (purple, medium) -->
+  <!-- Wave 2: Warm golden secondary wave -->
   <path d="M 130,150 Q 175,150 200,125 Q 225,100 255,150 Q 285,195 315,150 Q 340,115 365,150 Q 390,180 420,150 Q 445,125 475,150 Q 500,170 530,150 Q 555,132 585,150 Q 610,165 640,150 Q 665,135 695,150 Q 720,168 770,150" 
     stroke="url(#wave2)" stroke-width="2" fill="none" opacity="0.8"/>
 
-  <!-- Voice waveform - main wave 1 (indigo, sharp) -->
+  <!-- Wave 1: Primary glowing rose waveform -->
   <path d="M 170,150 Q 210,150 235,115 Q 260,80 290,150 Q 320,215 350,150 Q 375,100 405,150 Q 430,190 460,150 Q 485,115 510,150 Q 535,180 560,150 Q 585,125 610,150 Q 640,175 670,150 Q 695,120 730,150" 
     stroke="url(#wave1)" stroke-width="2.5" fill="none" filter="url(#glow)"/>
 
-  <!-- Center dot (mic indicator) -->
-  <circle cx="450" cy="150" r="4" fill="#818cf8" filter="url(#glow)" opacity="0.9"/>
-  <circle cx="450" cy="150" r="8" fill="none" stroke="#818cf8" stroke-width="0.5" opacity="0.4"/>
-  <circle cx="450" cy="150" r="14" fill="none" stroke="#818cf8" stroke-width="0.3" opacity="0.2"/>
+  <!-- Center Indicator (Core Pulse) -->
+  <circle cx="450" cy="150" r="4.5" fill="#FB7185" filter="url(#glow)"/>
+  <circle cx="450" cy="150" r="9" fill="none" stroke="#FDE68A" stroke-width="0.8" opacity="0.6"/>
+  <circle cx="450" cy="150" r="16" fill="none" stroke="#FB7185" stroke-width="0.4" opacity="0.3"/>
 
-  <!-- Top text -->
-  <text x="450" y="55" text-anchor="middle" fill="#c4b5fd" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="15" font-weight="500" letter-spacing="5" opacity="0.7">LISTEN · THINK · ACT · SPEAK</text>
+  <!-- Top Tagline in soft rose -->
+  <text x="450" y="55" text-anchor="middle" fill="#FECDD3" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="14" font-weight="600" letter-spacing="5" opacity="0.8">LISTEN · THINK · ACT · SPEAK</text>
 
-  <!-- Bottom text -->
-  <text x="450" y="255" text-anchor="middle" fill="#94a3b8" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" letter-spacing="1" opacity="0.5">Powered by MLX · Ollama · Apple Silicon</text>
+  <!-- Bottom Subtitle in warm muted tone -->
+  <text x="450" y="255" text-anchor="middle" fill="#FDE68A" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12" letter-spacing="1.5" opacity="0.5">Powered by MLX · Ollama · Apple Silicon</text>
 
-  <!-- Thin border -->
-  <rect x="0.5" y="0.5" width="899" height="299" rx="0" fill="none" stroke="#1e1b4b" stroke-width="1" opacity="0.3"/>
+  <!-- Subtle Border with Rose tint -->
+  <rect x="0.5" y="0.5" width="899" height="299" rx="0" fill="none" stroke="#FB7185" stroke-width="1" opacity="0.15"/>
 </svg>
-

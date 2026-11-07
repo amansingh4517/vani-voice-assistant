@@ -12,7 +12,6 @@
 
 <p align="center">
   <b>Fully local voice assistant for macOS.</b> Speech-to-text, LLM reasoning, 60+ macOS tools, and neural text-to-speech.<br>
-  Built on MLX, Ollama, and Apple Silicon.
 </p>
 
 <p align="center">
@@ -27,7 +26,7 @@
   <img src="https://img.shields.io/badge/python-3.13+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.13+"/>
   <img src="https://img.shields.io/badge/macOS-Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white" alt="macOS"/>
   <img src="https://img.shields.io/badge/Ollama-qwen3.5:9b-1a1a2e?style=for-the-badge&logo=ollama&logoColor=white" alt="Ollama"/>
-  <img src="https://img.shields.io/badge/MLX-Whisper%20%2B%20Kokoro-FF6F00?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRleHQgeD0iNCIgeT0iMTgiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIj7imqE8L3RleHQ+PC9zdmc+" alt="MLX Audio"/>
+  <img src="https://img.shields.io/badge/mlx--audio-STT%20%2B%20TTS-FF6F00?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRleHQgeD0iNCIgeT0iMTgiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIj7imqE8L3RleHQ+PC9zdmc+" alt="MLX Audio"/>
   <img src="https://img.shields.io/badge/tools-60+-28a745?style=for-the-badge" alt="60+ Tools"/>
   <img src="https://img.shields.io/badge/runs-100%25%20local-blueviolet?style=for-the-badge" alt="100% Local"/>
 </p>
@@ -51,9 +50,10 @@
 ## Features
 
 - Fully local and private — no API keys, no cloud, all inference on-device
+- **Unified Audio Engine** — Both speech-to-text and text-to-speech run on **`mlx-audio`** on Apple Silicon
 - Continuous voice interaction with Silero VAD (voice activity detection)
-- Speech-to-text via MLX Whisper (`whisper-large-v3-turbo`) on Apple Silicon
-- Neural text-to-speech via Kokoro (`Kokoro-82M-bf16`) on Apple Silicon
+- Speech-to-text via `mlx-audio` (STT with `whisper-large-v3-turbo`)
+- Neural text-to-speech via `mlx-audio` (TTS with `Kokoro-82M-bf16`)
 - LLM reasoning with Ollama (`qwen3.5:9b`) and agentic multi-step tool calling
 - 60+ macOS control tools — apps, files, web, media, system, messaging, calendar, and more
 - Vani persona — calm, sharp, and quietly witty
@@ -147,8 +147,8 @@ The system follows a **listen → think → act → speak** loop:
 | --- | --- | --- |
 | Entry Point | `main.py` | Main listen → think → speak loop. Manages conversation history and exit logic. |
 | LLM Engine | `engine.py` | Sends messages to Ollama with tool definitions. Runs an agentic loop (max 6 steps) executing tool calls until a final text response is produced. |
-| Speech-to-Text | `tools/ear.py` | Captures audio via microphone, detects speech with Silero VAD, transcribes with MLX Whisper (`whisper-large-v3-turbo`). Uses a ring buffer to avoid clipping. |
-| Text-to-Speech | `tools/voice.py` | Synthesizes speech with Kokoro (`Kokoro-82M-bf16`) via MLX Audio. Strips markdown before synthesis. |
+| Speech-to-Text | `tools/ear.py` | Captures audio via microphone, detects speech with Silero VAD, transcribes via `mlx-audio` (`whisper-large-v3-turbo`). Uses a ring buffer to avoid clipping. |
+| Text-to-Speech | `tools/voice.py` | Synthesizes speech via `mlx-audio` (`Kokoro-82M-bf16`). Strips markdown before synthesis. |
 | TTS Fallback | `tools/voice2.py` | Fallback TTS using the native macOS `say` command. |
 | System Prompt | `prompt.py` | Vani persona definition with dynamic date/time, speech-optimized output rules, and safety guidelines. |
 | Tool Registry | `mac_tools/core/registry.py` | `@tool` decorator and `ToolRegistry` class powering auto-discovery. |

@@ -1,0 +1,190 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="480" viewBox="0 0 900 480">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1117"/>
+      <stop offset="100%" stop-color="#161b22"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#79c0ff"/>
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3fb950"/>
+      <stop offset="100%" stop-color="#56d364"/>
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#bc8cff"/>
+      <stop offset="100%" stop-color="#d2a8ff"/>
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f0883e"/>
+      <stop offset="100%" stop-color="#f4a261"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="480" rx="16" fill="url(#bg)"/>
+  
+  <!-- Subtle grid dots -->
+  <g opacity="0.08">
+    <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="1" fill="#c9d1d9"/>
+    </pattern>
+    <rect width="900" height="480" fill="url(#dots)"/>
+  </g>
+
+  <!-- Title -->
+  <text x="450" y="40" text-anchor="middle" fill="#c9d1d9" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" letter-spacing="3" opacity="0.6">HOW VANI WORKS</text>
+
+  <!-- Connection lines (drawn first, behind boxes) -->
+  <!-- ear → main -->
+  <line x1="195" y1="185" x2="295" y2="185" stroke="#58a6ff" stroke-width="2" opacity="0.5"/>
+  <polygon points="290,180 300,185 290,190" fill="#58a6ff" opacity="0.7"/>
+  
+  <!-- main → engine -->
+  <line x1="475" y1="185" x2="575" y2="185" stroke="#58a6ff" stroke-width="2" opacity="0.5"/>
+  <polygon points="570,180 580,185 570,190" fill="#58a6ff" opacity="0.7"/>
+  
+  <!-- engine → voice -->
+  <line x1="755" y1="150" x2="830" y2="100" stroke="#3fb950" stroke-width="2" opacity="0.5"/>
+  <polygon points="824,96 833,100 826,105" fill="#3fb950" opacity="0.7"/>
+
+  <!-- engine → tools -->
+  <line x1="665" y1="225" x2="665" y2="290" stroke="#f0883e" stroke-width="2" opacity="0.5"/>
+  <polygon points="660,285 665,295 670,285" fill="#f0883e" opacity="0.7"/>
+  
+  <!-- tools → engine (return) -->
+  <path d="M 580 300 Q 540 260 590 225" stroke="#f0883e" stroke-width="1.5" fill="none" opacity="0.3" stroke-dasharray="5,5"/>
+  <polygon points="586,230 593,222 595,233" fill="#f0883e" opacity="0.4"/>
+
+  <!-- ============ NODES ============ -->
+
+  <!-- Node 1: ear.py (STT) -->
+  <g>
+    <rect x="45" y="120" width="150" height="130" rx="12" fill="#0d1117" stroke="#58a6ff" stroke-width="1.5" opacity="0.9"/>
+    <rect x="45" y="120" width="150" height="32" rx="12" fill="#58a6ff" fill-opacity="0.12"/>
+    <!-- clip bottom corners of header -->
+    <rect x="45" y="140" width="150" height="12" fill="#58a6ff" fill-opacity="0.12"/>
+    <line x1="45" y1="152" x2="195" y2="152" stroke="#58a6ff" stroke-width="0.5" opacity="0.3"/>
+    
+    <text x="80" y="142" fill="#58a6ff" font-family="system-ui, sans-serif" font-size="13" font-weight="700">🎙️ ear.py</text>
+    <text x="65" y="175" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11">Silero VAD</text>
+    <text x="65" y="193" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11">MLX Whisper</text>
+    <text x="65" y="215" fill="#58a6ff" font-family="monospace" font-size="10" opacity="0.7">speech → text</text>
+    <text x="65" y="240" fill="#484f58" font-family="system-ui, sans-serif" font-size="9">whisper-large-v3-turbo</text>
+  </g>
+
+  <!-- Node 2: main.py (Loop) -->
+  <g>
+    <rect x="300" y="120" width="175" height="130" rx="12" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5" opacity="0.9"/>
+    <rect x="300" y="120" width="175" height="32" rx="12" fill="#bc8cff" fill-opacity="0.12"/>
+    <rect x="300" y="140" width="175" height="12" fill="#bc8cff" fill-opacity="0.12"/>
+    <line x1="300" y1="152" x2="475" y2="152" stroke="#bc8cff" stroke-width="0.5" opacity="0.3"/>
+    
+    <text x="335" y="142" fill="#d2a8ff" font-family="system-ui, sans-serif" font-size="13" font-weight="700">🔄 main.py</text>
+    <text x="320" y="175" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11">Conversation Loop</text>
+    <text x="320" y="193" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11">History Manager</text>
+    <text x="320" y="215" fill="#d2a8ff" font-family="monospace" font-size="10" opacity="0.7">listen → think → speak</text>
+    <text x="320" y="240" fill="#484f58" font-family="system-ui, sans-serif" font-size="9">last 8 turns context</text>
+  </g>
+
+  <!-- Node 3: engine.py (LLM) -->
+  <g>
+    <rect x="580" y="120" width="175" height="130" rx="12" fill="#0d1117" stroke="#f0883e" stroke-width="1.5" opacity="0.9"/>
+    <rect x="580" y="120" width="175" height="32" rx="12" fill="#f0883e" fill-opacity="0.12"/>
+    <rect x="580" y="140" width="175" height="12" fill="#f0883e" fill-opacity="0.12"/>
+    <line x1="580" y1="152" x2="755" y2="152" stroke="#f0883e" stroke-width="0.5" opacity="0.3"/>
+    
+    <text x="615" y="142" fill="#f4a261" font-family="system-ui, sans-serif" font-size="13" font-weight="700">🧠 engine.py</text>
+    <text x="600" y="175" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11">Ollama LLM Chat</text>
+    <text x="600" y="193" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11">Agentic Tool Loop</text>
+    <text x="600" y="215" fill="#f4a261" font-family="monospace" font-size="10" opacity="0.7">max 6 tool steps</text>
+    <text x="600" y="240" fill="#484f58" font-family="system-ui, sans-serif" font-size="9">qwen3.5:9b · temp 0.4</text>
+  </g>
+
+  <!-- Node 4: voice.py (TTS) -->
+  <g>
+    <rect x="785" y="60" width="100" height="75" rx="10" fill="#0d1117" stroke="#3fb950" stroke-width="1.5" opacity="0.9"/>
+    <text x="808" y="88" fill="#56d364" font-family="system-ui, sans-serif" font-size="12" font-weight="700">🔊 TTS</text>
+    <text x="800" y="107" fill="#8b949e" font-family="system-ui, sans-serif" font-size="10">Kokoro</text>
+    <text x="800" y="122" fill="#484f58" font-family="system-ui, sans-serif" font-size="9">MLX Audio</text>
+  </g>
+
+  <!-- Node 5: mac_tools (Tools) -->
+  <g>
+    <rect x="505" y="295" width="320" height="155" rx="12" fill="#0d1117" stroke="#f0883e" stroke-width="1.5" opacity="0.9"/>
+    <rect x="505" y="295" width="320" height="32" rx="12" fill="#f0883e" fill-opacity="0.1"/>
+    <rect x="505" y="315" width="320" height="12" fill="#f0883e" fill-opacity="0.1"/>
+    <line x1="505" y1="327" x2="825" y2="327" stroke="#f0883e" stroke-width="0.5" opacity="0.3"/>
+    
+    <text x="600" y="317" fill="#f4a261" font-family="system-ui, sans-serif" font-size="13" font-weight="700">⚡ mac_tools/ — 60+ Tools</text>
+
+    <!-- Tool grid -->
+    <g font-family="monospace" font-size="10">
+      <text x="525" y="348" fill="#58a6ff">apps</text>
+      <text x="585" y="348" fill="#58a6ff">files</text>
+      <text x="640" y="348" fill="#58a6ff">search</text>
+      <text x="710" y="348" fill="#58a6ff">web</text>
+      <text x="760" y="348" fill="#58a6ff">media</text>
+      
+      <text x="525" y="370" fill="#3fb950">volume</text>
+      <text x="595" y="370" fill="#3fb950">display</text>
+      <text x="665" y="370" fill="#3fb950">network</text>
+      <text x="745" y="370" fill="#3fb950">power</text>
+      
+      <text x="525" y="392" fill="#d2a8ff">calendar</text>
+      <text x="600" y="392" fill="#d2a8ff">messages</text>
+      <text x="685" y="392" fill="#d2a8ff">reminders</text>
+      <text x="775" y="392" fill="#d2a8ff">notes</text>
+      
+      <text x="525" y="414" fill="#8b949e">keyboard</text>
+      <text x="610" y="414" fill="#8b949e">clipboard</text>
+      <text x="700" y="414" fill="#8b949e">calculator</text>
+      <text x="790" y="414" fill="#8b949e">shell</text>
+
+      <text x="525" y="436" fill="#484f58">archives</text>
+      <text x="610" y="436" fill="#484f58">organizer</text>
+      <text x="700" y="436" fill="#484f58">screenshot</text>
+    </g>
+  </g>
+
+  <!-- prompt.py (floating label) -->
+  <g>
+    <rect x="60" y="295" width="140" height="55" rx="10" fill="#0d1117" stroke="#484f58" stroke-width="1" opacity="0.7"/>
+    <text x="95" y="318" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11" font-weight="600">📝 prompt.py</text>
+    <text x="80" y="338" fill="#484f58" font-family="system-ui, sans-serif" font-size="10">Vani persona + rules</text>
+  </g>
+  <!-- prompt → main -->
+  <path d="M 140 295 Q 140 270 300 200" stroke="#484f58" stroke-width="1" fill="none" opacity="0.3" stroke-dasharray="4,4"/>
+
+  <!-- config.py (floating label) -->
+  <g>
+    <rect x="240" y="295" width="130" height="55" rx="10" fill="#0d1117" stroke="#484f58" stroke-width="1" opacity="0.7"/>
+    <text x="270" y="318" fill="#8b949e" font-family="system-ui, sans-serif" font-size="11" font-weight="600">⚙️ config.py</text>
+    <text x="256" y="338" fill="#484f58" font-family="system-ui, sans-serif" font-size="10">model + timing</text>
+  </g>
+  <!-- config → main -->
+  <path d="M 310 295 Q 350 270 380 250" stroke="#484f58" stroke-width="1" fill="none" opacity="0.3" stroke-dasharray="4,4"/>
+
+  <!-- Flow labels -->
+  <text x="230" y="177" text-anchor="middle" fill="#58a6ff" font-family="monospace" font-size="9" opacity="0.6">text</text>
+  <text x="520" y="177" text-anchor="middle" fill="#58a6ff" font-family="monospace" font-size="9" opacity="0.6">messages</text>
+  <text x="800" y="155" text-anchor="middle" fill="#3fb950" font-family="monospace" font-size="9" opacity="0.6">response</text>
+  <text x="690" y="270" text-anchor="middle" fill="#f0883e" font-family="monospace" font-size="9" opacity="0.6">tool calls</text>
+  <text x="565" y="270" text-anchor="middle" fill="#f0883e" font-family="monospace" font-size="9" opacity="0.6">results</text>
+</svg>
+

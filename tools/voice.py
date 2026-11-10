@@ -42,7 +42,12 @@ def speak(text: str):
         # 1. Generate the audio using MLX
         # 'af_heart' is a high-quality American Female voice. 
         # You can also try 'am_adam' (American Male) or 'bf_emma' (British Female)
-        results = list(model.generate(text=clean_text))
+        results = list(model.generate(
+            text=clean_text,
+            voice="hf_alpha",  # Directs the model to load Hindi voice arrays
+            lang_code="h",     # Tells misaki to use the Hindi text-to-phoneme pipeline
+            speed=1.0
+        ))
         
         if not results:
             print("[VOICE ERROR] MLX generated empty audio.")

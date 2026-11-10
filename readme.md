@@ -65,7 +65,7 @@
 
 ### Prerequisites
 
-- macOS on Apple Silicon (M1/M2/M3/M4)
+- macOS on Apple Silicon (M series)
 - Python 3.13+
 - [Ollama](https://ollama.com) installed and running
 
@@ -214,10 +214,10 @@ vani-voice-assistant/
 `find_files` · `search_in_files` · `open_path` · `open_file_with_app` · `reveal_in_finder`
 
 ### Web
-`open_url` · `web_search` · `play_on_youtube` · `get_weather`
+`open_url` · `web_search` · `search_on_youtube` · `get_weather`
 
 ### Media
-`music_control` · `get_now_playing` · `play_song_in_music`
+`play_song` · `music_control` · `get_now_playing` · `play_song_in_music`
 
 ### Sound & Display
 `get_volume` · `set_volume` · `change_volume` · `set_mute` · `change_brightness` · `set_dark_mode` · `toggle_dark_mode`

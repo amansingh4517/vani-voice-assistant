@@ -1,7 +1,7 @@
 import ollama
 from config import MAIN_MODEL
 from mac_tools import ALL_TOOLS, TOOL_MAP
-# from mac_tools.assistant_control import EXIT_SIGNAL
+from mac_tools.exit import EXIT_SIGNAL
 
 MAX_STEPS = 6   # stops infinite tool loops
 
@@ -24,8 +24,12 @@ def process_prompt(messages: list) -> str:
             model=MAIN_MODEL,
             messages=messages,
             tools=ALL_TOOLS,
-            think=False,                       # faster for voice; remove if your ollama version errors
-            options={"temperature": 0.4},
+            think=True,                       # faster for voice; remove if your ollama version errors
+            options={
+                "temperature": 0.8,        # Bump this up from 0.4 to 0.8 for creativity
+                "top_p": 0.9,              # Keeps word choices natural and prevents wild gibberish
+                "repeat_penalty": 1.15     # Prevents loops and repetitive sentence structures
+            },
         )
         msg = response.message
         messages.append(msg)

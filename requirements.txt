@@ -7,3 +7,4 @@ loguru
 misaki
 num2words
 spacy
+pywhatkit

@@ -86,6 +86,14 @@ class ToolTests(unittest.TestCase):
             self.assertIn("1 to Images", msg)
             self.assertIn("1 to Other", msg)
 
+    def test_play_song_uses_runner(self):
+        fake = FakeRunner()
+        set_runner(fake)
+        msg = TOOL_MAP["play_song"]("Shape of You")
+        self.assertTrue("YouTube Music" in msg)
+        self.assertTrue(len(fake.calls) > 0)
+        self.assertEqual(fake.calls[0][0], "open")
+
     def test_duplicate_tool_name_rejected(self):
         with self.assertRaises(ValueError):
             registry.register(TOOL_MAP["open_app"])

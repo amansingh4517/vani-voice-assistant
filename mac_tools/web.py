@@ -35,8 +35,8 @@ def web_search(query: str, engine: str = "google") -> str:
 
 
 @tool
-def play_on_youtube(query: str) -> str:
-    """Open YouTube search results for a song or video."""
+def search_on_youtube(query: str) -> str:
+    """Search YouTube and open the search results page. Use this ONLY when the user asks to search YouTube or browse videos/tutorials. To play music or songs, use play_song instead."""
     res = run(["open", _SEARCH_ENGINES["youtube"] + urllib.parse.quote_plus(query)])
     return res.message(f"Showing YouTube results for '{query}'.")
 
@@ -52,3 +52,18 @@ def get_weather(city: str = "") -> str:
             return resp.read().decode("utf-8").strip()
     except Exception as e:
         return error(f"could not fetch weather ({e}).")
+
+
+@tool
+def play_on_youtube(query: str) -> str:
+    """Play a specific song or video directly on YouTube."""
+    try:
+        # Automatically searches and opens the top matching video
+        pywhatkit.playonyt(query)
+        
+        # Since pywhatkit opens the browser itself, we just return a success message
+        # (Assuming your 'run' or a dummy object handles the response text)
+        return run([]).message(f"Playing '{query}' on YouTube.")
+    
+    except Exception as e:
+        return error(f"Could not play video on YouTube ({e}).")

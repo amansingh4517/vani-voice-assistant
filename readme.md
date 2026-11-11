@@ -11,14 +11,15 @@
 </p>
 
 <p align="center">
-  <b>Fully local voice assistant for macOS.</b> Speech-to-text, LLM reasoning, 60+ macOS tools, and neural text-to-speech.<br>
+  <b>Fully local voice assistant for macOS.</b> Wake-word detection, speech-to-text, LLM reasoning, 71 macOS tools, and neural text-to-speech.<br>
+  Built on MLX, Ollama, openWakeWord, and Apple Silicon.
 </p>
 
 <p align="center">
   <a href="#features">Features</a> ·
   <a href="#installation">Installation</a> ·
   <a href="#quick-start">Quick Start</a> ·
-  <a href="#architecture">Architecture</a> ·
+  <a href="#documentation">Documentation</a> ·
   <a href="#available-tools">Available Tools</a>
 </p>
 
@@ -27,7 +28,7 @@
   <img src="https://img.shields.io/badge/macOS-Apple%20Silicon-000000?style=for-the-badge&logo=apple&logoColor=white" alt="macOS"/>
   <img src="https://img.shields.io/badge/Ollama-qwen3.5:9b-1a1a2e?style=for-the-badge&logo=ollama&logoColor=white" alt="Ollama"/>
   <img src="https://img.shields.io/badge/mlx--audio-STT%20%2B%20TTS-FF6F00?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHRleHQgeD0iNCIgeT0iMTgiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IndoaXRlIj7imqE8L3RleHQ+PC9zdmc+" alt="MLX Audio"/>
-  <img src="https://img.shields.io/badge/tools-60+-28a745?style=for-the-badge" alt="60+ Tools"/>
+  <img src="https://img.shields.io/badge/tools-71-28a745?style=for-the-badge" alt="71 Tools"/>
   <img src="https://img.shields.io/badge/runs-100%25%20local-blueviolet?style=for-the-badge" alt="100% Local"/>
 </p>
 
@@ -38,64 +39,60 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Architecture](#architecture)
+- [Documentation](#documentation)
+- [Project Structure](#project-structure)
 - [Available Tools](#available-tools)
-- [Adding a New Tool](#adding-a-new-tool)
 - [Configuration](#configuration)
-- [Safety](#safety)
-- [Testing](#testing)
+- [Testing & Linting](#testing--linting)
 - [Requirements](#requirements)
 - [Acknowledgements](#acknowledgements)
 
 ## Features
 
-- Fully local and private — no API keys, no cloud, all inference on-device
-- **Unified Audio Engine** — Both speech-to-text and text-to-speech run on **`mlx-audio`** on Apple Silicon
-- Continuous voice interaction with Silero VAD (voice activity detection)
-- Speech-to-text via `mlx-audio` (STT with `whisper-large-v3-turbo`)
-- Neural text-to-speech via `mlx-audio` (TTS with `Kokoro-82M-bf16`)
-- LLM reasoning with Ollama (`qwen3.5:9b`) and agentic multi-step tool calling
-- 60+ macOS control tools — apps, files, web, media, system, messaging, calendar, and more
-- Vani persona — calm, sharp, and quietly witty
-- Extensible plugin architecture — drop a file in `mac_tools/` and it's auto-discovered
-- Safety-first design with path protection, shell blocklist, and confirmation gates
-- Conversation memory with automatic context trimming (last 8 turns)
+- **100% Local & Private** — no API keys, no cloud inference; runs on Apple Silicon unified memory
+- **On-Device Wake Word** — passive acoustic keyword spotting (`"hey jarvis"`) via `openwakeword` (`onnxruntime`), keeping VAD and Whisper idle until triggered
+- **Conversational Follow-up Window** — after Vani replies, stay in active listening for `FOLLOW_UP_SECONDS` (`8` s) with no wake word needed for follow-ups or confirmations
+- **Unified Audio Engine** — speech-to-text (`whisper-large-v3-turbo-asr-fp16`) and neural text-to-speech (`Kokoro-82M-bf16`) powered by `mlx-audio`
+- **Silero VAD + Ring Buffer** — 16 kHz voice activity detection with a ~0.5 s pre-speech buffer so initial words are never clipped
+- **Agentic Tool Calling** — local Ollama (`qwen3.5:9b`) reasoning with up to 6 chained tool calls per turn
+- **71 macOS Tools** — apps, files, Spotlight search, web, YouTube Music, system controls, iMessage, Calendar, Reminders, Notes, and more
+- **Extensible & Safe** — `pkgutil.walk_packages` auto-discovery, `CommandRunner` abstraction, path protection, shell blocklist, and confirmation gates
 
 ## Installation
 
 ### Prerequisites
 
-- macOS on Apple Silicon (M series)
+- macOS on Apple Silicon (M1/M2/M3/M4)
 - Python 3.13+
 - [Ollama](https://ollama.com) installed and running
 
-### Pull the LLM model
+### 1. Pull the LLM model
 
 ```bash
 ollama pull qwen3.5:9b
 ```
 
-### Using pip
+### 2. Clone and install
 
 ```bash
 git clone https://github.com/amansingh4517/vani-voice-assistant.git
 cd vani-voice-assistant
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
 ```
 
-Create a virtual environment and install dependencies:
+For development (testing and linting):
 
 ```bash
-python -m venv myenv
-source myenv/bin/activate
-pip install -r requirements.txt
-pip install silero-vad-lite
+pip install -e ".[dev]"
 ```
 
-### Grant macOS permissions
+### 3. Grant macOS permissions
 
-Go to **System Settings → Privacy & Security** and grant your terminal the following:
+Go to **System Settings → Privacy & Security** and grant your terminal:
 
-- **Microphone** — for voice input
+- **Microphone** — for wake-word and voice input
 - **Accessibility** — for keyboard control and app management
 - **Automation** — for AppleScript-based tools (Calendar, Music, Reminders, etc.)
 
@@ -104,211 +101,132 @@ Go to **System Settings → Privacy & Security** and grant your terminal the fol
 ### Running the assistant
 
 ```bash
-python main.py
+python -m vani
 ```
 
-The assistant will load the VAD, Whisper, and Kokoro models into memory (first run downloads the models automatically), then begin listening for your voice.
+You can also use the installed console script `vani` or `make run`.
+
+### Wake Word & Voice Flow
+
+1. On startup, Vani loads the wake-word, Silero VAD, Whisper, and Kokoro models (the first run caches model weights locally).
+2. Vani waits passively in wake-word mode (`[EAR] Waiting for wake word...`).
+3. Say **"hey jarvis"** to wake Vani, then speak your command within 6 seconds (`WAKE_GRACE_SECONDS`).
+4. After Vani replies, she stays in active follow-up mode for **8 seconds** (`FOLLOW_UP_SECONDS`), so you can ask a follow-up or confirm an action without repeating the wake word.
+5. If no speech occurs within `FOLLOW_UP_SECONDS`, Vani returns to passive wake-word listening.
+6. Say **"exit"**, **"quit"**, **"stop"**, **"goodbye"**, or **"bye"** to shut down.
 
 ### Example commands
 
 ```
-"Hey, what's the weather like today?"
-
+"Hey Jarvis... what's the weather like today?"
+"Play Starboy"
 "Open Google Chrome and search for MLX Audio"
-
 "Set a timer for 5 minutes"
-
 "What's my battery percentage?"
-
-"Send an iMessage to John saying I'll be there in 10"
-
 "Create a calendar event for tomorrow at 3pm called Team Standup"
-
 "Organize my Downloads folder"
-
 "Turn on dark mode and set the volume to 50"
 ```
 
-### Exiting
+## Documentation
 
-Say **"exit"**, **"quit"**, or **"stop"** to shut down the assistant.
+- [Architecture & Pipeline](docs/architecture.md)
+- [Wake Word Detection & Tuning](docs/wake-word.md)
+- [Adding a New Tool](docs/adding-tools.md)
+- [Safety & Guardrails](docs/safety.md)
 
-## Architecture
-
-The system follows a **listen → think → act → speak** loop:
-
-<p align="center">
-  <img src="assets/architecture.svg" alt="Vani Architecture" width="900"/>
-</p>
-
-### Component overview
-
-| Component | File | Description |
-| --- | --- | --- |
-| Entry Point | `main.py` | Main listen → think → speak loop. Manages conversation history and exit logic. |
-| LLM Engine | `engine.py` | Sends messages to Ollama with tool definitions. Runs an agentic loop (max 6 steps) executing tool calls until a final text response is produced. |
-| Speech-to-Text | `tools/ear.py` | Captures audio via microphone, detects speech with Silero VAD, transcribes via `mlx-audio` (`whisper-large-v3-turbo`). Uses a ring buffer to avoid clipping. |
-| Text-to-Speech | `tools/voice.py` | Synthesizes speech via `mlx-audio` (`Kokoro-82M-bf16`). Strips markdown before synthesis. |
-| TTS Fallback | `tools/voice2.py` | Fallback TTS using the native macOS `say` command. |
-| System Prompt | `prompt.py` | Vani persona definition with dynamic date/time, speech-optimized output rules, and safety guidelines. |
-| Tool Registry | `mac_tools/core/registry.py` | `@tool` decorator and `ToolRegistry` class powering auto-discovery. |
-| Tool Runner | `mac_tools/core/runner.py` | `CommandRunner` abstraction over subprocess, enabling testable tool implementations. |
-| macOS Tools | `mac_tools/*.py` | 60+ tool functions across 17 modules. |
-
-### Project structure
+## Project Structure
 
 ```
 vani-voice-assistant/
-├── main.py                  # Entry point
-├── engine.py                # LLM tool-calling loop
-├── prompt.py                # Vani system prompt
-├── config.py                # Model & timing configuration
-├── requirements.txt         # Python dependencies
-├── tools/
-│   ├── ear.py               # Speech-to-text (VAD + Whisper)
-│   ├── voice.py             # Text-to-speech (Kokoro)
-│   ├── voice2.py            # TTS fallback (macOS say)
-│   └── sys_tools.py         # Exit signal tool
-├── mac_tools/
-│   ├── __init__.py           # Auto-discovers all tool modules
-│   ├── core/
-│   │   ├── registry.py       # @tool decorator & registry
-│   │   ├── runner.py         # CommandRunner abstraction
-│   │   ├── applescript.py    # AppleScript helpers
-│   │   ├── app_resolver.py   # Fuzzy app name resolution
-│   │   ├── paths.py          # Path resolution & safety
-│   │   ├── results.py        # Standardized result strings
-│   │   ├── dates.py          # Date parsing utilities
-│   │   └── safety.py         # Shell command blocklist
-│   ├── apps.py               # App management
-│   ├── files.py              # File operations
-│   ├── file_search.py        # File search (Spotlight)
-│   ├── web.py                # Web & search
-│   ├── media.py              # Music & media control
-│   ├── sound_display.py      # Volume, brightness, dark mode
-│   ├── system_info.py        # Battery, disk, system info
-│   ├── network.py            # Wi-Fi, Bluetooth, IP
-│   ├── power.py              # Lock, sleep, restart, shutdown
-│   ├── input_control.py      # Keyboard input
-│   ├── messaging.py          # iMessage, email
-│   ├── calendar_tools.py     # Calendar events
-│   ├── reminders_notes.py    # Reminders & notes
-│   ├── calculator.py         # Safe math eval
-│   ├── desktop_utils.py      # Clipboard, notifications, screenshots
-│   ├── organizer.py          # Folder organizer
-│   ├── archives.py           # Zip & unzip
-│   ├── advanced.py           # Raw shell & AppleScript
-│   └── tests/
-│       └── test_tools.py     # Unit tests with FakeRunner
+├── pyproject.toml                  # Package config, dependencies, pytest & ruff settings
+├── Makefile                        # run, test, lint shortcuts
+├── LICENSE                         # MIT License
+├── .env.example                    # Optional environment variable reference
+├── docs/
+│   ├── architecture.md
+│   ├── adding-tools.md
+│   ├── safety.md
+│   └── wake-word.md
+├── scripts/
+│   └── wake_debug.py               # Live wake-word score & mic peak meter
+├── src/vani/
+│   ├── __init__.py
+│   ├── __main__.py                 # `python -m vani` entrypoint
+│   ├── app.py                      # Main loop, exit handling, follow-up state
+│   ├── config.py                   # LLM, VAD, wake-word, and TTS settings
+│   ├── agent/
+│   │   ├── engine.py               # Ollama chat + tool execution loop
+│   │   ├── history.py              # Conversation history trimming
+│   │   └── prompt.py               # Vani persona and instructions
+│   ├── audio/
+│   │   ├── wake.py                 # WakeWordDetector (openWakeWord)
+│   │   ├── listener.py             # Mic stream, wake gate, Silero VAD, Whisper STT
+│   │   ├── speaker.py              # Kokoro TTS via mlx-audio
+│   │   └── speaker_fallback.py     # macOS `say` fallback
+│   └── tools/
+│       ├── __init__.py             # Auto-discovers tools via pkgutil.walk_packages
+│       ├── advanced.py             # Raw shell & AppleScript tools
+│       ├── core/                   # @tool registry, CommandRunner, paths, dates, safety
+│       ├── system/                 # apps, power, network, system_info, sound_display
+│       ├── files/                  # files, file_search, organizer, archives
+│       ├── comms/                  # messaging, calendar_tools, reminders_notes
+│       ├── media/                  # media, web
+│       ├── desktop/                # desktop_utils, input_control
+│       └── utility/                # calculator, exit
+└── tests/
+    ├── conftest.py                 # Shared FakeRunner fixture
+    ├── agent/test_history.py
+    ├── audio/test_wake.py
+    └── tools/                      # Split unit tests by tool area
 ```
 
 ## Available Tools
 
-### Apps
-`open_app` · `quit_app` · `force_quit_app` · `list_running_apps` · `get_frontmost_app` · `open_system_settings`
-
-### Files
-`list_directory` · `get_file_info` · `read_text_file` · `write_text_file` · `append_text_file` · `create_folder` · `move_path` · `copy_path` · `rename_path` · `delete_path` · `empty_trash`
-
-### File Search
-`find_files` · `search_in_files` · `open_path` · `open_file_with_app` · `reveal_in_finder`
-
-### Web
-`open_url` · `web_search` · `search_on_youtube` · `get_weather`
-
-### Media
-`play_song` · `music_control` · `get_now_playing` · `play_song_in_music`
-
-### Sound & Display
-`get_volume` · `set_volume` · `change_volume` · `set_mute` · `change_brightness` · `set_dark_mode` · `toggle_dark_mode`
-
-### System Info
-`get_battery_status` · `get_system_info` · `get_disk_usage` · `get_current_datetime`
-
-### Network
-`set_wifi` · `set_bluetooth` · `get_ip_address`
-
-### Power
-`lock_screen` · `sleep_display` · `sleep_mac` · `restart_mac` · `shut_down_mac`
-
-### Input Control
-`type_text` · `press_keys`
-
-### Messaging
-`send_imessage` · `compose_email`
-
-### Calendar
-`create_calendar_event` · `get_calendar_events`
-
-### Reminders & Notes
-`create_reminder` · `list_reminders` · `create_note`
-
-### Calculator
-`calculate`
-
-### Desktop Utilities
-`get_clipboard` · `set_clipboard` · `show_notification` · `speak` · `take_screenshot` · `set_timer`
-
-### Organizer
-`organize_folder`
-
-### Archives
-`zip_path` · `unzip_file`
-
-### Advanced
-`run_shell_command` · `run_applescript`
-
-## Adding a New Tool
-
-Create a new `.py` file in `mac_tools/` (or add to an existing one) and use the `@tool` decorator:
-
-```python
-from mac_tools.core import tool, CommandRunner
-
-@tool(
-    category="my_category",
-    confirm=False,  # Set True for destructive actions
-)
-def my_new_tool(runner: CommandRunner, name: str, count: int = 5) -> str:
-    """Short description for the LLM to understand what this tool does.
-
-    Args:
-        name: What this argument is for.
-        count: Optional argument with a default value.
-    """
-    result = runner.run(["echo", name])
-    return f"Done: {result.stdout}"
-```
-
-The tool is automatically discovered and available to the LLM on the next run. No registration code needed.
+- **System (`system/`)**: `open_app` · `quit_app` · `force_quit_app` · `list_running_apps` · `get_frontmost_app` · `open_system_settings` · `lock_screen` · `sleep_display` · `sleep_mac` · `restart_mac` · `shut_down_mac` · `set_wifi` · `set_bluetooth` · `get_ip_address` · `get_battery_status` · `get_system_info` · `get_disk_usage` · `get_current_datetime` · `get_volume` · `set_volume` · `change_volume` · `set_mute` · `change_brightness` · `set_dark_mode` · `toggle_dark_mode`
+- **Files (`files/`)**: `list_directory` · `get_file_info` · `read_text_file` · `write_text_file` · `append_text_file` · `create_folder` · `move_path` · `copy_path` · `rename_path` · `delete_path` · `empty_trash` · `find_files` · `search_in_files` · `open_path` · `open_file_with_app` · `reveal_in_finder` · `organize_folder` · `zip_path` · `unzip_file`
+- **Comms (`comms/`)**: `send_imessage` · `compose_email` · `create_calendar_event` · `get_calendar_events` · `create_reminder` · `list_reminders` · `create_note`
+- **Media (`media/`)**: `play_song` · `music_control` · `get_now_playing` · `play_song_in_music` · `open_url` · `web_search` · `search_on_youtube` · `get_weather`
+- **Desktop (`desktop/`)**: `get_clipboard` · `set_clipboard` · `show_notification` · `speak` · `take_screenshot` · `set_timer` · `type_text` · `press_keys`
+- **Utility & Advanced**: `calculate` · `exit_system` · `run_shell_command` · `run_applescript`
 
 ## Configuration
 
-Edit `config.py` to customize:
+Edit [`src/vani/config.py`](src/vani/config.py) to customize behavior:
 
 ```python
-MAIN_MODEL = 'qwen3.5:9b'     # Ollama model name
-WAIT_TIME_SECONDS = 2.5        # Silence duration (seconds) before speech is transcribed
+MAIN_MODEL = "qwen3.5:9b"
+LLM_TEMPERATURE = 0.8
+LLM_TOP_P = 0.9
+LLM_REPEAT_PENALTY = 1.15
+
+WAIT_TIME_SECONDS = 1.5        # silence before transcribing
+
+WAKE_MODEL = "hey_jarvis"      # openWakeWord pretrained model
+WAKE_THRESHOLD = 0.35          # raise if false triggers, lower if it misses you
+FOLLOW_UP_SECONDS = 8          # no wake word needed for this long after a reply
+
+TTS_MODEL = "mlx-community/Kokoro-82M-bf16"
+TTS_VOICE = "hf_alpha"
+TTS_LANG_CODE = "h"
+TTS_SPEED = 1.0
 ```
 
-## Safety
+## Testing & Linting
 
-- **Path protection** — system directories and top-level home folders (Desktop, Documents, etc.) cannot be deleted
-- **Shell blocklist** — dangerous commands like `sudo`, `rm -rf /`, `mkfs`, `dd`, and curl-pipe-to-shell patterns are blocked
-- **Confirmation gates** — destructive actions (delete, empty trash, restart, shutdown, send messages) require explicit user confirmation before execution
-- **Tool loop limit** — max 6 tool calls per turn to prevent infinite loops
-- **False exit prevention** — LLM exit signals are validated against actual keywords in the user's speech
-- **Safe math** — calculator uses AST parsing instead of `eval()` to prevent code injection
-
-## Testing
-
-Run the unit tests (cross-platform — no macOS required thanks to the `FakeRunner` abstraction):
+All unit tests run cross-platform without microphone hardware or macOS commands:
 
 ```bash
-python -m pytest mac_tools/tests/
+pytest
+# or: make test
 ```
 
-Tests cover tool registration, category filtering, app resolution, confirmation requirements, shell blocklist enforcement, calculator safety, file operations, and organizer logic.
+Lint with Ruff:
+
+```bash
+ruff check src tests scripts
+# or: make lint
+```
 
 ## Requirements
 
@@ -316,19 +234,22 @@ Tests cover tool registration, category filtering, app resolution, confirmation 
 | --- | --- |
 | `ollama` | Local LLM inference client |
 | `mlx-audio` | Whisper STT & Kokoro TTS on Apple Silicon |
+| `openwakeword` | Acoustic keyword spotting (wake-word detection) |
+| `onnxruntime` | ONNX inference runtime for `openwakeword` |
+| `silero-vad-lite` | Voice activity detection |
 | `sounddevice` | Microphone audio capture |
 | `soundfile` | WAV file I/O |
 | `numpy` | Audio array processing |
 | `misaki` | Phonemizer for Kokoro TTS |
 | `num2words` | Number-to-word conversion for TTS |
-| `silero-vad-lite` | Voice activity detection |
-| `loguru` | Logging |
+| `spacy` | NLP dependency required by TTS pipeline |
 
 ## Acknowledgements
 
 - [Ollama](https://ollama.com) — local LLM inference
 - [MLX](https://github.com/ml-explore/mlx) — Apple Silicon ML framework
 - [MLX Audio](https://github.com/Blaizzy/mlx-audio) — Whisper & Kokoro on MLX
+- [openWakeWord](https://github.com/dscripka/openWakeWord) — on-device wake-word detection
 - [Silero VAD](https://github.com/snakers4/silero-vad) — voice activity detection
 - [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) — neural text-to-speech
 

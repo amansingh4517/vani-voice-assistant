@@ -16,9 +16,9 @@ import pkgutil
 
 from vani.tools.core import registry, set_runner
 
-for _module in pkgutil.iter_modules(__path__):
-    if _module.name not in ("core", "tests"):
-        importlib.import_module(f"{__name__}.{_module.name}")
+for _importer, _mod_name, _is_pkg in pkgutil.walk_packages(__path__, prefix=f"{__name__}."):
+    if not _is_pkg and "core" not in _mod_name.split(".") and "tests" not in _mod_name.split("."):
+        importlib.import_module(_mod_name)
 
 ALL_TOOLS = registry.all()
 TOOL_MAP = {fn.__name__: fn for fn in ALL_TOOLS}

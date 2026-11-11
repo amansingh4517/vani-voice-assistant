@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vani-voice-assistant"
+version = "0.1.0"
+description = "A fully local macOS voice assistant with wake word, VAD, Whisper STT, Ollama LLM, and Kokoro TTS."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.13"
+authors = [
+    { name = "Aman Singh" },
+]
+dependencies = [
+    "sounddevice",
+    "numpy",
+    "ollama",
+    "mlx-audio",
+    "soundfile",
+    "misaki",
+    "num2words",
+    "spacy",
+    "openwakeword",
+    "onnxruntime",
+    "silero-vad-lite",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+]
+
+[project.scripts]
+vani = "vani.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F"]
+ignore = ["E402", "E501", "E731"]

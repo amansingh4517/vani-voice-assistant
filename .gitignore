@@ -4,11 +4,15 @@
 myenv/
 genaiEnv/
 venv/
+.venv/
 
-# 2. Python Caches
+# 2. Python Caches & Packaging
 # Python automatically generates these when running scripts. They are useless on other machines.
 __pycache__/
 *.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
 
 # 3. macOS System Files
 # Your Mac creates hidden files in folders to remember icon positions. 
@@ -20,7 +24,8 @@ __pycache__/
 models/
 
 # 5. Application Data
-# Ignore the generated audio files and test scripts created by the agent.
+# Ignore the generated audio files, env files, and scratch scripts.
 *.wav
 test.txt
 /app.py
+.env

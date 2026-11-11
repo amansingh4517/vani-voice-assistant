@@ -5,22 +5,13 @@ from tools.voice import speak
 from prompt import build_system_prompt                       # CHANGED (was: system_prompt)
 
 from config import FOLLOW_UP_SECONDS
+from vani.agent.history import trim_history
 
 # Keywords that genuinely mean "quit" — used as a safeguard against
 # the LLM incorrectly triggering exit_system on unrelated commands.
 QUIT_KEYWORDS = ["exit", "quit", "stop listening", "goodbye", "bye",
                  "go to sleep", "shut down"]                 # NEW
 EXACT_QUIT = {"exit", "stop", "quit", "goodbye", "bye"}      # NEW (instant quit, no LLM)
-
-
-def trim_history(messages, keep_turns=8):                    # NEW (optional)
-    """Keep the system prompt + last few user turns, cutting only at a user
-    message so a tool call is never separated from its result."""
-    role = lambda m: m["role"] if isinstance(m, dict) else m.role
-    users = [i for i, m in enumerate(messages) if role(m) == "user"]
-    if len(users) <= keep_turns:
-        return messages
-    return messages[:1] + messages[users[-keep_turns]:]
 
 
 def main():

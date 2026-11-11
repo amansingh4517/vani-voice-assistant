@@ -23,4 +23,4 @@ models/
 # Ignore the generated audio files and test scripts created by the agent.
 *.wav
 test.txt
-app.py
+/app.py

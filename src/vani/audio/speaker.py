@@ -1,7 +1,11 @@
-import subprocess
 import os
+import subprocess
+import tempfile
+
 import numpy as np
 import soundfile as sf
+
+from vani.config import TTS_LANG_CODE, TTS_MODEL, TTS_SPEED, TTS_VOICE
 
 # --- PRE-FLIGHT: Verify misaki and its dependencies are fully importable ---
 # mlx-audio's Kokoro pipeline wraps ImportErrors with a generic message that
@@ -28,45 +32,47 @@ from mlx_audio.tts.utils import load_model
 # --- SINGLETON INSTANCE ---
 # Loads the model into your M5's Unified Memory once at startup.
 print("[SYSTEM] Loading MLX Audio Kokoro Model...")
-model = load_model("mlx-community/Kokoro-82M-bf16")
+model = load_model(TTS_MODEL)
+
 
 def speak(text: str):
     """Converts text to speech using MLX Audio (Kokoro) and plays it natively."""
-    clean_text = text.replace('*', '').replace('#', '').strip()
+    clean_text = text.replace("*", "").replace("#", "").strip()
     if not clean_text:
         return
-        
+
     print(f"\n[VOICE] Synthesizing: {clean_text[:50]}...")
-    
+
+    output_file = None
     try:
         # 1. Generate the audio using MLX
-        # 'af_heart' is a high-quality American Female voice. 
-        # You can also try 'am_adam' (American Male) or 'bf_emma' (British Female)
         results = list(model.generate(
             text=clean_text,
-            voice="hf_alpha",  # Directs the model to load Hindi voice arrays
-            lang_code="h",     # Tells misaki to use the Hindi text-to-phoneme pipeline
-            speed=1.0
+            voice=TTS_VOICE,
+            lang_code=TTS_LANG_CODE,
+            speed=TTS_SPEED,
         ))
-        
+
         if not results:
             print("[VOICE ERROR] MLX generated empty audio.")
             return
-            
+
         # 2. Extract the raw audio tensor and convert it to a standard NumPy array
         audio_array = np.array(results[0].audio)
-        
+
         # 3. Save to a temporary WAV file at 24kHz (Kokoro's native sample rate)
-        output_file = "output.wav"
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+            output_file = tmp.name
         sf.write(output_file, audio_array, 24000)
-        
+
         # 4. Play it using macOS's native blocking audio player
-        if os.path.exists(output_file):
-            subprocess.run(["afplay", output_file], check=True)
-            os.remove(output_file)
-            
+        subprocess.run(["afplay", output_file], check=True)
+
     except ImportError as e:
         # Surface the *real* missing package — not the generic Kokoro wrapper.
         print(f"[VOICE ERROR] Missing dependency: {e.__cause__ or e}")
     except Exception as e:
         print(f"[VOICE ERROR] MLX Audio failed: {e}")
+    finally:
+        if output_file and os.path.exists(output_file):
+            os.remove(output_file)

@@ -6,7 +6,7 @@ from vani.tools.core import error, resolve_app, resolve_path, run, tool
 
 
 def _format_hits(output: str, nothing: str, limit: int) -> str:
-    lines = [l for l in output.splitlines() if l]
+    lines = [line for line in output.splitlines() if line]
     if not lines:
         return nothing
     shown = lines[:int(limit)]

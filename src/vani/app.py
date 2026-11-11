@@ -6,6 +6,7 @@ from vani.agent.prompt import build_system_prompt
 
 from vani.config import FOLLOW_UP_SECONDS
 from vani.agent.history import trim_history
+from vani.tools.utility.exit import EXIT_SIGNAL
 
 # Keywords that genuinely mean "quit" — used as a safeguard against
 # the LLM incorrectly triggering exit_system on unrelated commands.
@@ -60,7 +61,7 @@ def main():
             speak("Sorry, I couldn't reach my brain just now.")
             continue
 
-        if assistant_reply == "EXIT_SIGNAL":
+        if assistant_reply == EXIT_SIGNAL:
             # NEW: only quit if the user's words actually mean quit
             if not any(re.search(rf"\b{k}\b", user_input.lower()) for k in QUIT_KEYWORDS):
                 print("[BRAIN] Ignored a false exit request.")

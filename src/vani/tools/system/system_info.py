@@ -5,7 +5,7 @@ import platform
 import re
 import shutil
 
-from vani.tools.core import error, human_size, run, tool
+from vani.tools.core import human_size, run, tool
 
 
 @tool

@@ -1,4 +1,5 @@
-import getpass, os
+import getpass
+import os
 from datetime import datetime
 
 def build_system_prompt() -> str:

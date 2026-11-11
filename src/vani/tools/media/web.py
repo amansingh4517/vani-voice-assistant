@@ -53,17 +53,3 @@ def get_weather(city: str = "") -> str:
     except Exception as e:
         return error(f"could not fetch weather ({e}).")
 
-
-@tool
-def play_on_youtube(query: str) -> str:
-    """Play a specific song or video directly on YouTube."""
-    try:
-        # Automatically searches and opens the top matching video
-        pywhatkit.playonyt(query)
-        
-        # Since pywhatkit opens the browser itself, we just return a success message
-        # (Assuming your 'run' or a dummy object handles the response text)
-        return run([]).message(f"Playing '{query}' on YouTube.")
-    
-    except Exception as e:
-        return error(f"Could not play video on YouTube ({e}).")

@@ -1,5 +1,10 @@
 import ollama
-from vani.config import MAIN_MODEL
+from vani.config import (
+    LLM_REPEAT_PENALTY,
+    LLM_TEMPERATURE,
+    LLM_TOP_P,
+    MAIN_MODEL,
+)
 from vani.tools import ALL_TOOLS, TOOL_MAP
 from vani.tools.utility.exit import EXIT_SIGNAL
 
@@ -26,9 +31,9 @@ def process_prompt(messages: list) -> str:
             tools=ALL_TOOLS,
             think=True,                       # faster for voice; remove if your ollama version errors
             options={
-                "temperature": 0.8,        # Bump this up from 0.4 to 0.8 for creativity
-                "top_p": 0.9,              # Keeps word choices natural and prevents wild gibberish
-                "repeat_penalty": 1.15     # Prevents loops and repetitive sentence structures
+                "temperature": LLM_TEMPERATURE,
+                "top_p": LLM_TOP_P,
+                "repeat_penalty": LLM_REPEAT_PENALTY,
             },
         )
         msg = response.message

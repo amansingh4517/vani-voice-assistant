@@ -8,3 +8,6 @@ misaki
 num2words
 spacy
 pywhatkit
+openwakeword
+onnxruntime
+silero-vad-lite

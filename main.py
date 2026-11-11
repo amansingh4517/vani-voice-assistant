@@ -4,6 +4,8 @@ from tools.ear import listen_for_command
 from tools.voice import speak
 from prompt import build_system_prompt                       # CHANGED (was: system_prompt)
 
+from config import FOLLOW_UP_SECONDS
+
 # Keywords that genuinely mean "quit" — used as a safeguard against
 # the LLM incorrectly triggering exit_system on unrelated commands.
 QUIT_KEYWORDS = ["exit", "quit", "stop listening", "goodbye", "bye",
@@ -32,11 +34,17 @@ def main():
     
     print("\n=== Voice Agent Initialized ===")
     print("Say 'exit' or 'stop' to quit.\n")
+
+    follow_up = False
     
     while True:
-        user_input = listen_for_command()
+        user_input = listen_for_command(
+            wait_for_wake=not follow_up,
+            timeout=FOLLOW_UP_SECONDS if follow_up else None,
+        )
 
-        if not user_input or not user_input.strip():         # NEW: ignore silence
+        if not user_input or not user_input.strip():  
+            follow_up = False          # follow-up window expired -> back to wake word
             continue
 
         print(f"\n\nYou said: {user_input}")
@@ -76,6 +84,7 @@ def main():
         print(f"\nAssistant: {assistant_reply}\n")
         speak(assistant_reply)
 
+        follow_up = True               # next turn needs no wake word for a few seconds
         messages = trim_history(messages)                    # NEW (optional)
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 """AppleScript helpers. Knows about AppleScript only - nothing about any tool."""
 
-from .runner import CommandResult, run
+from vani.tools.core.runner import CommandResult, run
 
 
 def quote(text: str) -> str:

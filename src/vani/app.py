@@ -1,10 +1,10 @@
-import re                                                    # NEW
-from engine import process_prompt
-from tools.ear import listen_for_command
-from tools.voice import speak
-from prompt import build_system_prompt                       # CHANGED (was: system_prompt)
+import re
+from vani.agent.engine import process_prompt
+from vani.audio.listener import listen_for_command
+from vani.audio.speaker import speak
+from vani.agent.prompt import build_system_prompt
 
-from config import FOLLOW_UP_SECONDS
+from vani.config import FOLLOW_UP_SECONDS
 from vani.agent.history import trim_history
 
 # Keywords that genuinely mean "quit" — used as a safeguard against

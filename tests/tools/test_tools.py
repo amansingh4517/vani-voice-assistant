@@ -4,8 +4,8 @@ import os
 import tempfile
 import unittest
 
-from mac_tools import TOOL_MAP, get_tools, registry, set_runner
-from mac_tools.core.runner import CommandResult, SubprocessRunner
+from vani.tools import TOOL_MAP, get_tools, registry, set_runner
+from vani.tools.core.runner import CommandResult, SubprocessRunner
 
 
 class FakeRunner:

@@ -3,7 +3,7 @@
 import datetime
 import os
 
-from .core import error, get_runner, quote, run, run_script, tool
+from vani.tools.core import error, get_runner, quote, run, run_script, tool
 
 
 @tool

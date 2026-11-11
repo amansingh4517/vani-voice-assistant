@@ -6,7 +6,7 @@ To support a new kind of file, add a line to FILE_CATEGORIES. Nothing else chang
 import os
 import shutil
 
-from .core import error, is_protected, resolve_path, tool
+from vani.tools.core import error, is_protected, resolve_path, tool
 
 FILE_CATEGORIES = {
     "Images": {".jpg", ".jpeg", ".png", ".gif", ".heic", ".webp", ".svg", ".bmp", ".tiff"},

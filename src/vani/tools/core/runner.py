@@ -10,7 +10,7 @@ import subprocess
 from dataclasses import dataclass
 from typing import Optional, Protocol, Sequence
 
-from .results import error
+from vani.tools.core.results import error
 
 
 @dataclass(frozen=True)

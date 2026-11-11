@@ -1,6 +1,6 @@
 """Sending messages and email."""
 
-from .core import quote, run_script, tool
+from vani.tools.core import quote, run_script, tool
 
 
 @tool

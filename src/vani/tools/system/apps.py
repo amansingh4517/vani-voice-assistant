@@ -1,6 +1,6 @@
 """Opening, closing and inspecting applications."""
 
-from .core import error, quote, resolve_app, run, run_script, tool
+from vani.tools.core import error, quote, resolve_app, run, run_script, tool
 
 
 @tool

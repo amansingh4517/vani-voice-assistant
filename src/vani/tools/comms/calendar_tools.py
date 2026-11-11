@@ -2,7 +2,7 @@
 
 import datetime
 
-from .core import (applescript_date_lines, error, parse_datetime, quote,
+from vani.tools.core import (applescript_date_lines, error, parse_datetime, quote,
                    run_script, tool)
 
 

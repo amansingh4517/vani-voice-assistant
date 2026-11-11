@@ -1,4 +1,4 @@
-from .core import error, human_size, run, tool
+from vani.tools.core import error, human_size, run, tool
 
 EXIT_SIGNAL = "EXIT_SIGNAL"
 

@@ -8,7 +8,7 @@ import datetime
 import os
 import shutil
 
-from .core import error, human_size, is_protected, quote, resolve_path, run, run_script, tool
+from vani.tools.core import error, human_size, is_protected, quote, resolve_path, run, run_script, tool
 
 
 @tool

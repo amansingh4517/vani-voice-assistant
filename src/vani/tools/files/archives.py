@@ -2,7 +2,7 @@
 
 import os
 
-from .core import error, resolve_path, run, tool
+from vani.tools.core import error, resolve_path, run, tool
 
 
 @tool

@@ -4,7 +4,7 @@ import re
 import urllib.parse
 import urllib.request
 
-from .core import error, quote, run, run_script, tool
+from vani.tools.core import error, quote, run, run_script, tool
 
 _COMMANDS = {"play": "play", "pause": "pause", "play_pause": "playpause",
              "toggle": "playpause", "next": "next track", "skip": "next track",

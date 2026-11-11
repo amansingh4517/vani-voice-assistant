@@ -2,7 +2,7 @@
 
 import os
 
-from .core import error, resolve_app, resolve_path, run, tool
+from vani.tools.core import error, resolve_app, resolve_path, run, tool
 
 
 def _format_hits(output: str, nothing: str, limit: int) -> str:

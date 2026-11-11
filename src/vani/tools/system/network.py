@@ -2,7 +2,7 @@
 
 import shutil
 
-from .core import error, run, tool
+from vani.tools.core import error, run, tool
 
 
 @tool

@@ -4,7 +4,7 @@ import urllib.parse
 import urllib.request
 import re
 
-from .core import error, run, tool
+from vani.tools.core import error, run, tool
 
 _SEARCH_ENGINES = {
     "google": "https://www.google.com/search?q=",

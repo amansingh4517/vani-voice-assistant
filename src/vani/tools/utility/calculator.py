@@ -5,7 +5,7 @@ import math
 import operator
 import re
 
-from .core import error, tool
+from vani.tools.core import error, tool
 
 _OPS = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul,
         ast.Div: operator.truediv, ast.Pow: operator.pow, ast.Mod: operator.mod,

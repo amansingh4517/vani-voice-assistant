@@ -2,7 +2,7 @@ import numpy as np
 import sounddevice as sd
 import openwakeword
 from openwakeword.model import Model
-from config import WAKE_MODEL
+from vani.config import WAKE_MODEL
 
 openwakeword.utils.download_models()
 model = Model(wakeword_models=[WAKE_MODEL], inference_framework="onnx")

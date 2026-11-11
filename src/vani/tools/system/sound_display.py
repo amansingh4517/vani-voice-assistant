@@ -1,6 +1,6 @@
 """Speaker volume, screen brightness and appearance."""
 
-from .core import error, run_script, tool
+from vani.tools.core import error, run_script, tool
 
 
 @tool

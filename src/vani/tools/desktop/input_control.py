@@ -1,6 +1,6 @@
 """Keyboard control of the active app (needs Accessibility permission)."""
 
-from .core import error, quote, run_script, tool
+from vani.tools.core import error, quote, run_script, tool
 
 _KEY_CODES = {"return": 36, "enter": 36, "tab": 48, "space": 49, "delete": 51,
               "escape": 53, "esc": 53, "left": 123, "right": 124, "down": 125, "up": 126}

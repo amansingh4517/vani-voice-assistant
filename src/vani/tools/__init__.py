@@ -1,7 +1,7 @@
-"""mac_tools - tools for a Mac voice assistant, one module per kind of tool.
+"""vani.tools - tools for a Mac voice assistant, one module per kind of tool.
 
 Usage:
-    from mac_tools import ALL_TOOLS, get_tools, open_app
+    from vani.tools import ALL_TOOLS, get_tools, open_app
 
     get_tools("files", "file_search")      # only some categories
     registry.categories()                  # see what exists
@@ -14,7 +14,7 @@ file in - it is discovered automatically. No existing file needs editing.
 import importlib
 import pkgutil
 
-from .core import registry, set_runner
+from vani.tools.core import registry, set_runner
 
 for _module in pkgutil.iter_modules(__path__):
     if _module.name not in ("core", "tests"):

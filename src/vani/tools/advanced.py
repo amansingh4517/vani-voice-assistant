@@ -1,6 +1,6 @@
 """Last-resort tools. Prefer a specific tool whenever one exists."""
 
-from .core import error, is_dangerous_shell, run, run_script, tool
+from vani.tools.core import error, is_dangerous_shell, run, run_script, tool
 
 
 @tool

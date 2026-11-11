@@ -10,8 +10,8 @@ import sounddevice as sd
 from silero_vad_lite import SileroVAD
 from mlx_audio.stt import load as load_stt_model
 
-from config import (WAIT_TIME_SECONDS, WAKE_MODEL, WAKE_THRESHOLD)
-from tools.wake import FRAME_SAMPLES, WakeWordDetector
+from vani.config import (WAIT_TIME_SECONDS, WAKE_MODEL, WAKE_THRESHOLD)
+from vani.audio.wake import FRAME_SAMPLES, WakeWordDetector
 
 SAMPLE_RATE = 16000
 CHUNK_SIZE = 512                               # Silero's 32 ms window

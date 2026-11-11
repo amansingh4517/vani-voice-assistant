@@ -1,6 +1,6 @@
 """Locking, sleeping, restarting and shutting down."""
 
-from .core import error, run, run_script, tool
+from vani.tools.core import error, run, run_script, tool
 
 
 @tool

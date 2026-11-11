@@ -1,7 +1,7 @@
 import ollama
-from config import MAIN_MODEL
-from mac_tools import ALL_TOOLS, TOOL_MAP
-from mac_tools.exit import EXIT_SIGNAL
+from vani.config import MAIN_MODEL
+from vani.tools import ALL_TOOLS, TOOL_MAP
+from vani.tools.utility.exit import EXIT_SIGNAL
 
 MAX_STEPS = 6   # stops infinite tool loops
 

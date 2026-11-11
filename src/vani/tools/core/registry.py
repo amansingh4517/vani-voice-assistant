@@ -4,7 +4,7 @@ New tools are added by decorating a function with @tool. Nothing in this file,
 or in any existing tool module, has to change.
 
 The category of a tool is the name of the module it lives in, so
-mac_tools/files.py -> category "files".
+vani/tools/files/files.py -> category "files".
 """
 
 from typing import Callable, Dict, List
